@@ -11,6 +11,15 @@
 #	    Port 50001
 #
 #  Then use dmod-node1 in runbg.
+#
+# docker-compose up
+# docker stack deploy -c docker-compose.yml dmod
+#
+# update image
+# ansible nodes -m shell -a "docker image rm -f matthiaskoenig/dmod:latest"
+# docker service update --force --image matthiaskoenig/dmod:latest dmod_dmod
+#
+# 
 ########################################
 
 version: "3"
