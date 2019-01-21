@@ -21,4 +21,6 @@ services:
       - "50001:22"
     volumes:
       - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
+    deploy:
+      replicas: 8
 
