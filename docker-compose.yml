@@ -26,14 +26,17 @@ version: "3"
 services:
   dmod:
     image: matthiaskoenig/dmod:latest
+    
     ports:
-      - target: 22
-        published: 50001
-        protocol: tcp
-        mode: host
-      
+      - "50001:22"
     volumes:
       - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
     deploy:
       replicas: 8
+    # networks: 
+    #  - dmodnet
+    network_mode: "host"
 
+#networks:
+#  dmodnet:
+    
