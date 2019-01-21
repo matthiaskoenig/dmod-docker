@@ -33,10 +33,9 @@ services:
       - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
     deploy:
       replicas: 8
-    # networks: 
-    #  - dmodnet
-    network_mode: "host"
+    # network_mode: "host"
 
 #networks:
 #  dmodnet:
     
+# docker service create --name dmod --network host -p "50001:22" -d --replicas 3 --mount type=bind,src="/home/mkoenig/.ssh/authorized_keys",dst="/tmp/authorized_keys" matthiaskoenig/dmod:latest
