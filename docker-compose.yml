@@ -19,7 +19,7 @@
 # ansible nodes -m shell -a "docker image rm -f matthiaskoenig/dmod:latest"
 # docker service update --force --image matthiaskoenig/dmod:latest dmod_dmod
 #
-# 
+# docker service create --name nginx-host --network host nginx
 ########################################
 
 version: "3"
@@ -27,7 +27,11 @@ services:
   dmod:
     image: matthiaskoenig/dmod:latest
     ports:
-      - "50001:22"
+      - target: 22
+        published: 50001
+        protocol: tcp
+        mode: host
+      
     volumes:
       - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
     deploy:
