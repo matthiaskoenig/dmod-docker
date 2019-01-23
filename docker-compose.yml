@@ -1,5 +1,8 @@
 ########################################
-# docker-compose up -d
+# To test on a single docker client use:
+#   docker-compose up -d
+# To deploy as service use:
+#   docker stack deploy -c docker-compose.yml dmod  
 #
 # access via:
 #   ssh root@<ip> -p 50001
@@ -11,9 +14,6 @@
 #	    Port 50001
 #
 #  Then use dmod-node1 in runbg.
-#
-# docker-compose up
-# docker stack deploy -c docker-compose.yml dmod
 #
 # update image
 # ansible nodes -m shell -a "docker image rm -f matthiaskoenig/dmod:latest"
@@ -31,7 +31,7 @@ services:
       - /data/nfs:/root
     deploy:
       replicas: 8
-    # network_mode: "host"
+    network_mode: "host"
 
 #networks:
 #  dmodnet:
