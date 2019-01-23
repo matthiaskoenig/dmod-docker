@@ -27,7 +27,7 @@ services:
     ports:
       - "50001:22"
     volumes:
-      - /data/nfs/authorized_keys:/tmp/authorized_keys:ro
+      - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
       - /data/nfs:/root
     deploy:
       replicas: 8
