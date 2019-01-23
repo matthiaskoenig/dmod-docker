@@ -2,20 +2,21 @@
 Deploying as a swarm service.
 
 ```bash
-# docker stack deploy -c docker-compose.yml dmod
+# The SSH keys are made available by copying the key in the NFS folder
 ssh head
+sudo mkdir /data/nfs/.ssh
+sudo cp /home/ubuntu/.ssh/authorized_keys /data/nfs/.ssh/authorized_keys
 
+# Start the service (number of replicas corresponding to machines) without mesh network
 docker service create --name dmod \
     --publish published=50001,target=22,protocol=tcp,mode=host \
-    -d \
     --replicas 8 \
     --mount type=bind,src="/home/ubuntu/.ssh/authorized_keys",dst="/tmp/authorized_keys" \
-    --mount type=bind,src="/data/nfs",dst="/root/data" \
+    --mount type=bind,src="/data/nfs",dst="/root" \
     matthiaskoenig/dmod:latest
 
 
 
-# docker service create --name dmod --network host -p "50001:22" -d --replicas 3 --mount type=bind,src="/home/mkoenig/.ssh/authorized_keys",dst="/tmp/authorized_keys" matthiaskoenig/dmod:latest
 
 
 
