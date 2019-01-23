@@ -4,12 +4,18 @@ Deploying as a swarm service.
 ```bash
 # docker stack deploy -c docker-compose.yml dmod
 ssh head
-sudo ln -s $HOME/.ssh/authorized_keys /data/nfs/authorized_keys
 
-docker service create --name dmod --network host -p "50001:22" -d --replicas 8 --mount type=bind,src="/data/nfs/authorized_keys",dst="/tmp/authorized_keys" --mount type=bind,src="/data/nfs",dst="/root" matthiaskoenig/dmod:latest
+docker service create --name dmod \
+    --publish published=50001,target=22,protocol=tcp,mode=host \
+    -d \
+    --replicas 8 \
+    --mount type=bind,src="/home/ubuntu/.ssh/authorized_keys",dst="/tmp/authorized_keys" \
+    --mount type=bind,src="/data/nfs",dst="/root/data" \
+    matthiaskoenig/dmod:latest
 
 
-docker service create --name dmod --network host -p "50001:22" -d --replicas 3 --mount type=bind,src="/home/mkoenig/.ssh/authorized_keys",dst="/tmp/authorized_keys" matthiaskoenig/dmod:latest
+
+# docker service create --name dmod --network host -p "50001:22" -d --replicas 3 --mount type=bind,src="/home/mkoenig/.ssh/authorized_keys",dst="/tmp/authorized_keys" matthiaskoenig/dmod:latest
 
 
 
