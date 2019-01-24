@@ -5,18 +5,19 @@ Deploying as a swarm service.
 # The SSH keys are made available by copying the key in the NFS folder
 ssh head
 sudo mkdir /data/nfs/.ssh
-sudo cp /home/ubuntu/.ssh/authorized_keys /data/nfs/.ssh/authorized_keys
+sudo cp $HOME/.ssh/authorized_keys /data/nfs/.ssh/authorized_keys
 
-# Start the service (number of replicas corresponding to machines) without mesh network
+# Start the service (the service is started on every node once)
 docker service create --name dmod \
     --publish published=50001,target=22,protocol=tcp,mode=host \
-    --replicas 8 \
-    --mount type=bind,src="/home/ubuntu/.ssh/authorized_keys",dst="/tmp/authorized_keys" \
+    --mode global \
+    --mount type=bind,src="$HOME/.ssh/authorized_keys",dst="/tmp/authorized_keys" \
     --mount type=bind,src="/data/nfs",dst="/root" \
     matthiaskoenig/dmod:latest
 
 
-
+`--mode global`
+The service mode determines whether this is a replicated service or a global service. A replicated service runs as many tasks as specified, while a global service runs on each active node in the swarm.
 
 
 
@@ -40,3 +41,19 @@ ansible nodes -m shell -a "cd /home/ubuntu/dmod-docker && docker-compose up -d"
 
 dmod-docker_dmod_1
 ```
+
+## monitoring
+- swarm prometheus
+https://www.weave.works/blog/swarmprom-prometheus-monitoring-for-docker-swarm
+cd git
+git clone https://github.com/stefanprodan/swarmprom.git
+cd git/swarmprom
+
+ADMIN_USER=admin \
+ADMIN_PASSWORD=swarmmon \
+SLACK_URL=https://hooks.slack.com/services/TOKEN \
+SLACK_CHANNEL=devops-alerts \
+SLACK_USER=alertmanager \
+docker stack deploy -c docker-compose.yml mon
+
+sudo ufw allow 3000
