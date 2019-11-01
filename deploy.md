@@ -1,5 +1,7 @@
 # Docker deploy
-Deploying as a swarm service.
+Documentation on how to deploy dmod in a cloud using the docker image in combination with a swarm
+service. 
+
 
 ```bash
 # The SSH keys are made available by copying the key in the NFS folder

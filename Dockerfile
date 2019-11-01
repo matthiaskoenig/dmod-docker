@@ -40,7 +40,6 @@ RUN apt-get update \
     lzma-dev \
 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
 # set working directory
 ENV DMOD /dmod
 WORKDIR $DMOD
@@ -52,7 +51,7 @@ RUN Rscript -e 'devtools::install_github("dkaschek/cOde")'
 RUN Rscript -e 'devtools::install_github("dkaschek/dMod")'
 RUN Rscript -e 'devtools::install_github("dlill/conveniencefunctions")'
 
-# ssh for container access
+# install ssh for container access
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive \
     apt-get -y install openssh-server \
@@ -72,11 +71,12 @@ RUN chmod 700 /root/.ssh
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
+# container exports port 22 for ssh access
 EXPOSE 22
 
 # entrypoint sets ssh permissions
-COPY docker-entrypoint.sh /bin/docker-entrypoint.sh
-RUN chmod +x /bin/docker-entrypoint.sh
-ENTRYPOINT ["/bin/docker-entrypoint.sh"]
+# COPY docker-entrypoint.sh /bin/docker-entrypoint.sh
+# RUN chmod +x /bin/docker-entrypoint.sh
+# ENTRYPOINT ["/bin/docker-entrypoint.sh"]
 
 CMD ["/usr/sbin/sshd", "-D"]

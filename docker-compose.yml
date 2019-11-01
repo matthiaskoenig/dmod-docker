@@ -1,38 +1,28 @@
-########################################
-# To test on a single docker client use:
-#   docker-compose up -d
-# To deploy as service use:
-#   docker stack deploy -c docker-compose.yml dmod  
+# ----------------------------------------------------------
+# Start dmod docker container
+# ----------------------------------------------------------
+# This docker-compose file starts the dmod container.
+# It maps the internal docker ssh port 22 to 50001 thereby
+# allowing access to the container via port 50001.
 #
-# access via:
-#   ssh root@<ip> -p 50001
+# In addition two volumes are mounted
+# 1. a data volume to /root in the container (this should
+#   be a NFS share when deploying on cluster).
+#   For now just a local tmp folder is used here (~/tmp/dmod)
+# 2. the local authorized keys for SSH access
 #
-# define alias in .ssh/config:
-#   Host dmod-node1
-#	    User root
-#	    HostName node1
-#	    Port 50001
-#
-#  Then use dmod-node1 in runbg.
-#
-# update image
-# ansible nodes -m shell -a "docker image rm -f matthiaskoenig/dmod:latest"
-########################################
+# To start the container use
+#      docker-compose up -d
+# ----------------------------------------------------------
 
 version: "3"
 services:
   dmod:
     image: matthiaskoenig/dmod:latest
-    
     ports:
       - "50001:22"
     volumes:
+      - ~/tmp/dmod:/root
       - ~/.ssh/authorized_keys:/tmp/authorized_keys:ro
-      - /data/nfs:/root
-    deploy:
-      replicas: 8
-    network_mode: "host"
 
-#networks:
-#  dmodnet:
-    
+    network_mode: "host"
